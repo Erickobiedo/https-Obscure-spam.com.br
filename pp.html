@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Obscure-Spam</title>
+  <style>
+    body {
+      background-color: #000;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      color: white;
+      text-shadow: 0 0 10px white, 0 0 20px #0ff;
+      font-size: 3em;
+      margin-bottom: 40px;
+    }
+    .container {
+      display: flex;
+      gap: 30px;
+    }
+    .box {
+      width: 400px;
+      height: 450px;
+      background-color: #111;
+      border: 2px solid #444;
+      padding: 20px;
+      color: #0f0;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    input, button {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      background-color: #222;
+      color: white;
+      border: 1px solid #555;
+    }
+    button:hover {
+      background-color: #333;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1>Obscure-Spam</h1>
+  <div class="container">
+    <!-- BOX 1: Code Scraper -->
+    <div class="box">
+      <h2>Code Scraper</h2>
+      <input id="code-url" placeholder="Enter site URL" />
+      <button onclick="scrapeSite()">Scrape Code</button>
+      <button onclick="copyCode()">Copy Code</button>
+      <pre id="code-output">// HTML will appear here</pre>
+    </div>
+
+    <!-- BOX 2: API Harvester -->
+    <div class="box">
+      <h2>API Harvester</h2>
+      <input id="api-url" placeholder="Enter API URL" />
+      <button onclick="harvestAPI()">Harvest API</button>
+      <pre id="api-output">// JSON appears here</pre>
+    </div>
+  </div>
+
+  <script>
+    async function scrapeSite() {
+      const url = document.getElementById('code-url').value;
+      const output = document.getElementById('code-output');
+      try {
+        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+        output.textContent = data.contents;
+      } catch (err) {
+        output.textContent = 'Error fetching site content.';
+      }
+    }
+
+    function copyCode() {
+      const code = document.getElementById('code-output').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        alert("Copied to clipboard.");
+      }, () => {
+        alert("Failed to copy.");
+      });
+    }
+
+    async function harvestAPI() {
+      const url = document.getElementById('api-url').value;
+      const output = document.getElementById('api-output');
+      try {
+        const res = await fetch(url);
+        const json = await res.json();
+        output.textContent = JSON.stringify(json, null, 2);
+      } catch (err) {
+        output.textContent = 'Error fetching API.';
+      }
+    }
+  </script>
+</body>
+</html>
